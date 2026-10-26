@@ -11,8 +11,10 @@ describe('readMailItem', () => {
 
   it('uses the sender display name', () => {
     stubOffice({
-      subject: 'Quarterly report',
-      from: { displayName: 'Ada Lovelace', emailAddress: 'ada@contoso.com' },
+      item: {
+        subject: 'Quarterly report',
+        from: { displayName: 'Ada Lovelace', emailAddress: 'ada@contoso.com' },
+      },
     })
 
     expect(readMailItem()).toEqual({ subject: 'Quarterly report', from: 'Ada Lovelace' })
@@ -20,8 +22,10 @@ describe('readMailItem', () => {
 
   it('falls back to the sender email address', () => {
     stubOffice({
-      subject: 'Quarterly report',
-      from: { displayName: '', emailAddress: 'ada@contoso.com' },
+      item: {
+        subject: 'Quarterly report',
+        from: { displayName: '', emailAddress: 'ada@contoso.com' },
+      },
     })
 
     expect(readMailItem()?.from).toBe('ada@contoso.com')

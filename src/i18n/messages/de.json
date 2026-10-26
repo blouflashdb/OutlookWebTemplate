@@ -1,0 +1,16 @@
+{
+  "taskpane": {
+    "title": "Outlook-Web-Vorlage",
+    "language": "Sprache",
+    "subject": "Betreff",
+    "noSubject": "(kein Betreff)",
+    "from": "Von",
+    "noMessage": {
+      "title": "Keine Nachricht ausgewählt",
+      "description": "Wählen Sie eine Nachricht aus, um ihre Details zu sehen."
+    }
+  },
+  "commands": {
+    "actionPerformed": "Aktion ausgeführt."
+  }
+}

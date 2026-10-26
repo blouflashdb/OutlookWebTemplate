@@ -5,6 +5,7 @@ Template for Outlook Web Add-ins.
 | Area | Tooling |
 | --- | --- |
 | UI | Vue 3, [Nuxt UI](https://ui.nuxt.com) (Vue mode, Tailwind CSS 4) |
+| Languages | [vue-i18n](https://vue-i18n.intlify.dev): English and German, following Outlook's display language |
 | Build | Vite 8 |
 | Language | TypeScript 6 with [`@tsconfig/bases`](https://github.com/tsconfig/bases): `strictest`, `node24`, `node-ts` |
 | Lint & format | ESLint with [`@antfu/eslint-config`](https://github.com/antfu/eslint-config) (type-aware, erasable syntax only, pnpm rules), run on commit by [lefthook](https://lefthook.dev) |
@@ -114,9 +115,34 @@ TypeScript is held at 6.x. TypeScript 7 (the native port) no longer ships the Ja
 
 Nuxt UI runs in Vue mode through `@nuxt/ui/vite` (see `vite.config.ts`) with `router: false`, because the task pane is a single view. Components and composables such as `UButton` and `useToast` are auto-imported. Their types are generated into `auto-imports.d.ts` and `components.d.ts`, which are committed so type-checking works on a clean checkout. Theme colors are set in the `ui` option. Icons come from the Lucide set (`i-lucide-*`) and are bundled at build time, so Outlook makes no requests to the Iconify API.
 
+## Languages
+
+The add-in ships English and German. Text lives in three places:
+
+| Where | How it is translated |
+| --- | --- |
+| Ribbon, add-in name and description (`manifest.xml`) | `Override Locale="de-DE"` entries. Outlook draws these before any code runs and picks them by its display language, so they can't follow the in-app switcher. |
+| Task pane | vue-i18n with messages in `src/i18n/messages/*.json`. Nuxt UI's own component texts use the matching `@nuxt/ui/locale`. |
+| Ribbon command notifications (`commands.ts`) | The same message files, without vue-i18n, so the commands page stays small. |
+
+At startup, `detectLocale()` in `src/i18n/locale.ts` takes the language the user picked in the add-in, then Outlook's `Office.context.displayLanguage` (`de-AT` counts as German), and falls back to English. The language menu in the task pane switches immediately and saves the choice in `Office.context.roamingSettings`, which is stored in the mailbox and follows the user to every device. Outlook has no event for display language changes; it reloads the add-in instead.
+
+Every language has to provide every English message: `pnpm type-check` and a unit test both fail otherwise. Message keys autocomplete in `t()`, but vue-i18n accepts any string there, so a misspelled key only shows up as a "Not found" warning in the browser console.
+
+To add a language, for example French:
+
+1. Add `fr.json` to `src/i18n/messages/` and register it in `messages` in `src/i18n/locale.ts`.
+2. Add `'fr'` to `SUPPORTED_LOCALES`.
+3. Add `fr` from `@nuxt/ui/locale` to `uiLocales` in `src/taskpane/App.vue`.
+4. Add `Override Locale="fr-FR"` entries to `manifest.xml`.
+
+`manifest.xml` only overrides `de-DE`; other German locales such as `de-AT` or `de-CH` get the English ribbon unless you add `Override` entries for them too.
+
+The language menu is Nuxt UI's `USelect`. It adds about 135 kB (43 kB gzipped) to the task pane because it brings Reka UI's select and popup positioning; vue-i18n adds about 54 kB (19 kB gzipped). For two languages, a pair of buttons would be lighter.
+
 ## Testing
 
-Office.js only exists inside an Office host, so tests install a minimal `Office` global with `stubOffice()` from `src/test-utils/office.ts`. It stubs only the APIs this add-in uses; extend it as you call more of Office.js.
+Office.js only exists inside an Office host, so tests install a minimal `Office` global with `stubOffice()` from `src/test-utils/office.ts`. It stubs only the APIs this add-in uses; extend it as you call more of Office.js. Pass `displayLanguage` and `settings` (saved roaming settings) to test other languages.
 
 ## Git hooks
 

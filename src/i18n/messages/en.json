@@ -1,0 +1,16 @@
+{
+  "taskpane": {
+    "title": "Outlook Web Template",
+    "language": "Language",
+    "subject": "Subject",
+    "noSubject": "(no subject)",
+    "from": "From",
+    "noMessage": {
+      "title": "No message selected",
+      "description": "Select a message to see its details."
+    }
+  },
+  "commands": {
+    "actionPerformed": "Performed action."
+  }
+}

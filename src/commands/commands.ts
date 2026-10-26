@@ -1,3 +1,5 @@
+import { detectLocale, messages } from '@/i18n/locale'
+
 /**
  * Handler for the "Perform an Action" ribbon button. Function names must match
  * <FunctionName> in manifest.xml.
@@ -5,7 +7,7 @@
 export function action(event: Office.AddinCommands.Event): void {
   const message: Office.NotificationMessageDetails = {
     type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-    message: 'Performed action.',
+    message: messages[detectLocale()].commands.actionPerformed,
     icon: 'Icon.80x80',
     persistent: true,
   }

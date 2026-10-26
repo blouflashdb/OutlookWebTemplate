@@ -14,5 +14,6 @@ declare module 'vue' {
     UAlert: typeof import('./node_modules/.pnpm/@nuxt+ui@4.12.0_e97f29aace24c9edb58554c071058614/node_modules/@nuxt/ui/dist/runtime/components/Alert.vue')['default']
     UApp: typeof import('./node_modules/.pnpm/@nuxt+ui@4.12.0_e97f29aace24c9edb58554c071058614/node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
     UCard: typeof import('./node_modules/.pnpm/@nuxt+ui@4.12.0_e97f29aace24c9edb58554c071058614/node_modules/@nuxt/ui/dist/runtime/components/Card.vue')['default']
+    USelect: typeof import('./node_modules/.pnpm/@nuxt+ui@4.12.0_e97f29aace24c9edb58554c071058614/node_modules/@nuxt/ui/dist/runtime/components/Select.vue')['default']
   }
 }

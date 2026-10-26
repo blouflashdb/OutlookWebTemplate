@@ -15,8 +15,13 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Outlook Web Template"/>
-  <Description DefaultValue="Starter add-in built with Vue 3, Vite and TypeScript."/>
+  <!-- Override entries localize strings; Outlook picks them by its display language. -->
+  <DisplayName DefaultValue="Outlook Web Template">
+    <Override Locale="de-DE" Value="Outlook-Web-Vorlage"/>
+  </DisplayName>
+  <Description DefaultValue="Starter add-in built with Vue 3, Vite and TypeScript.">
+    <Override Locale="de-DE" Value="Starter-Add-in mit Vue 3, Vite und TypeScript."/>
+  </Description>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-128.png"/>
   <SupportUrl DefaultValue="https://www.contoso.com/help"/>
@@ -104,13 +109,23 @@
           <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
         </bt:Urls>
         <bt:ShortStrings>
-          <bt:String id="Group.Label" DefaultValue="Outlook Web Template"/>
-          <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
-          <bt:String id="ActionButton.Label" DefaultValue="Perform an Action"/>
+          <bt:String id="Group.Label" DefaultValue="Outlook Web Template">
+            <bt:Override Locale="de-DE" Value="Outlook-Web-Vorlage"/>
+          </bt:String>
+          <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane">
+            <bt:Override Locale="de-DE" Value="Aufgabenbereich anzeigen"/>
+          </bt:String>
+          <bt:String id="ActionButton.Label" DefaultValue="Perform an Action">
+            <bt:Override Locale="de-DE" Value="Aktion ausführen"/>
+          </bt:String>
         </bt:ShortStrings>
         <bt:LongStrings>
-          <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Opens a pane with details about the selected message."/>
-          <bt:String id="ActionButton.Tooltip" DefaultValue="Adds a notification to the selected message."/>
+          <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Opens a pane with details about the selected message.">
+            <bt:Override Locale="de-DE" Value="Öffnet einen Bereich mit Details zur ausgewählten Nachricht."/>
+          </bt:String>
+          <bt:String id="ActionButton.Tooltip" DefaultValue="Adds a notification to the selected message.">
+            <bt:Override Locale="de-DE" Value="Fügt der ausgewählten Nachricht eine Benachrichtigung hinzu."/>
+          </bt:String>
         </bt:LongStrings>
       </Resources>
     </VersionOverrides>

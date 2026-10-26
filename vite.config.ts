@@ -53,6 +53,12 @@ export default defineConfig(async ({ command, mode }): Promise<ViteUserConfig> =
   return {
     // Relative asset URLs, so the build can be hosted under any path.
     base: './',
+    // vue-i18n feature flags: Composition API only, no devtools in production.
+    define: {
+      __VUE_I18N_FULL_INSTALL__: true,
+      __VUE_I18N_LEGACY_API__: false,
+      __INTLIFY_PROD_DEVTOOLS__: false,
+    },
     plugins: [
       vue(),
       ui({
