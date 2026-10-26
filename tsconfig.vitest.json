@@ -1,0 +1,11 @@
+// TSConfig for unit tests. App code imported by tests is type-checked through module resolution.
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
+
+    "types": ["node", "office-js", "vite/client"]
+  },
+  "include": ["src/**/*.spec.ts", "src/test-utils", "auto-imports.d.ts", "components.d.ts"],
+  "exclude": []
+}

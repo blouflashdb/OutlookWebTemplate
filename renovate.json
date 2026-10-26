@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":maintainLockFilesWeekly"
+  ],
+  "rangeStrategy": "bump",
+  "postUpdateOptions": ["pnpmDedupe"],
+  "azure-pipelines": {
+    "enabled": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update versions marked with a `# renovate:` comment in Azure Pipelines files",
+      "managerFilePatterns": ["/(^|/)\\.azuredevops/.+\\.ya?ml$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n\\s*\\S+:\\s*['\"]?(?<currentValue>[^'\"\\s]+)"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "vue-tsc and typescript-eslint need the JavaScript compiler API that TypeScript 7 (native port) does not ship",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7"
+    },
+    {
+      "description": "Stay on Node.js 24",
+      "matchPackageNames": ["node", "@types/node"],
+      "allowedVersions": "<25"
+    },
+    {
+      "description": "Lint tooling has to move together",
+      "matchPackageNames": ["eslint", "@antfu/eslint-config"],
+      "groupName": "eslint"
+    },
+    {
+      "description": "Office add-in CLI tooling",
+      "matchPackageNames": ["office-addin-*", "@types/office-js"],
+      "groupName": "office add-in tooling"
+    }
+  ]
+}

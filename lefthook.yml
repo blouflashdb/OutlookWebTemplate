@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/evilmartians/lefthook/master/schema.json
+# Git hooks, installed by `pnpm install` (lefthook's postinstall). https://lefthook.dev/configuration/
+
+# Standard `**` semantics, so `**/*.ts` also matches files in the repository root.
+glob_matcher: doublestar
+
+pre-commit:
+  jobs:
+    - name: eslint
+      glob: '**/*.{js,ts,vue,json,jsonc,yaml,yml,md}'
+      run: pnpm exec eslint --fix --no-warn-ignored {staged_files}
+      stage_fixed: true

@@ -1,0 +1,73 @@
+# CI: lint, test and build the add-in, then publish dist/ as a pipeline artifact.
+#
+# Set the pipeline variable ADDIN_PUBLIC_URL (in the pipeline UI or a variable group)
+# to the URL the add-in is hosted at. `vite build` writes it into dist/manifest.xml.
+
+trigger:
+  branches:
+    include: [main]
+
+pr:
+  branches:
+    include: [main]
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  # Azure Pipelines only sets TF_BUILD; tools such as lefthook's postinstall look for CI.
+  CI: true
+  PNPM_STORE_PATH: $(Pipeline.Workspace)/.pnpm-store
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+
+steps:
+  - task: UseNode@1
+    displayName: Use Node.js 24
+    inputs:
+      version: 24.x
+
+  # Corepack installs the pnpm version pinned in package.json#packageManager.
+  - script: |
+      corepack enable
+      pnpm config set store-dir "$(PNPM_STORE_PATH)"
+    displayName: Set up pnpm
+
+  - task: Cache@2
+    displayName: Cache pnpm store
+    inputs:
+      key: pnpm | "$(Agent.OS)" | pnpm-lock.yaml
+      restoreKeys: |
+        pnpm | "$(Agent.OS)"
+      path: $(PNPM_STORE_PATH)
+
+  - script: pnpm install --frozen-lockfile
+    displayName: Install dependencies
+
+  - script: pnpm lint
+    displayName: Lint
+
+  - script: pnpm test:ci
+    displayName: Test
+
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: reports/junit.xml
+      testRunTitle: Unit tests
+
+  - task: PublishCodeCoverageResults@2
+    displayName: Publish code coverage
+    condition: succeededOrFailed()
+    inputs:
+      summaryFileLocation: coverage/cobertura-coverage.xml
+
+  - script: pnpm build
+    displayName: Type-check and build
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish add-in
+    inputs:
+      targetPath: dist
+      artifact: addin

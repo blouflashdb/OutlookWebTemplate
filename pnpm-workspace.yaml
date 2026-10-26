@@ -1,0 +1,32 @@
+minimumReleaseAgeExcludePrune: true
+
+trustPolicy: no-downgrade
+# Packages published without provenance after earlier releases had it. Not takeovers:
+# Microsoft's Office sideload toolchain (pulled in by office-addin-debugging) and old
+# maintenance-line releases. Keep this list short and re-check it when it grows.
+trustPolicyExclude:
+  - '@microsoft/app-manifest'
+  - '@microsoft/m365-spec-parser'
+  - '@microsoft/m365agentstoolkit-cli'
+  - '@microsoft/teamsfx-api'
+  - '@microsoft/teamsfx-core'
+  - detect-port@1.6.1
+  - semver@5.7.2
+  - undici-types@6.21.0
+
+# office-addin-debugging sideloads by running `atk` from this peer dependency.
+# Hoisting it to the root links its binary into node_modules/.bin.
+publicHoistPattern:
+  - '@microsoft/m365agentstoolkit-cli'
+
+shellEmulator: true
+
+# Dependency install scripts are opt-in. keytar downloads its prebuilt native binary;
+# the others only do work that this project does not need.
+allowBuilds:
+  '@azure/msal-node-extensions': false
+  '@microsoft/m365agentstoolkit-cli': false
+  esbuild: false
+  keytar: true
+  lefthook: true
+  vue-demi: false

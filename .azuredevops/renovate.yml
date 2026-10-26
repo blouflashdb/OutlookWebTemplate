@@ -1,0 +1,52 @@
+# Runs Renovate (self-hosted) against this repository. Azure DevOps has no hosted
+# Renovate app, so this pipeline is how dependency update PRs get opened.
+#
+# One-time setup:
+#   1. Create a pipeline from this file.
+#   2. In Project settings > Repositories > <this repo> > Security, give
+#      "<project> Build Service (<org>)" Contribute, Contribute to pull requests,
+#      Create branch and Create tag.
+#   3. Add a secret pipeline variable RENOVATE_GITHUB_COM_TOKEN: a GitHub token
+#      with no scopes. Renovate uses it to fetch changelogs and avoid GitHub rate limits.
+
+trigger: none
+pr: none
+
+schedules:
+  - cron: '0 3 * * 1-5'
+    displayName: Weekdays at 03:00 UTC
+    branches:
+      include: [main]
+    always: true
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+  # renovate: datasource=npm depName=renovate
+  RENOVATE_VERSION: 44.185.0
+
+steps:
+  - checkout: none
+
+  - task: UseNode@1
+    displayName: Use Node.js 24
+    inputs:
+      version: 24.x
+
+  # Renovate runs pnpm to update pnpm-lock.yaml; Corepack resolves the version
+  # from the cloned repository's packageManager field.
+  - script: corepack enable
+    displayName: Set up pnpm
+
+  - script: npx --yes renovate@$(RENOVATE_VERSION)
+    displayName: Run Renovate
+    env:
+      RENOVATE_PLATFORM: azure
+      RENOVATE_ENDPOINT: $(System.CollectionUri)
+      RENOVATE_TOKEN: $(System.AccessToken)
+      RENOVATE_REPOSITORIES: $(System.TeamProject)/$(Build.Repository.Name)
+      RENOVATE_GITHUB_COM_TOKEN: $(RENOVATE_GITHUB_COM_TOKEN)
+      RENOVATE_GIT_AUTHOR: Renovate Bot <renovate@users.noreply.dev.azure.com>
+      LOG_LEVEL: info

@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Starts the dev server and opens Outlook on the web in Edge with the debugger
+      // attached to the add-in. Works with any account, including personal outlook.com
+      // accounts. Sideload manifest.xml once at https://aka.ms/olksideload first.
+      // For work or school accounts, use https://outlook.office.com/mail/.
+      "name": "Outlook on the web (Edge)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "https://outlook.live.com/mail/",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "Dev Server",
+      "postDebugTask": "Stop Dev Server"
+    },
+    {
+      // Starts the dev server, sideloads the add-in into classic Outlook on Windows
+      // and attaches to its WebView2. Sideloading needs a Microsoft 365 work or school
+      // account that is allowed to upload custom apps; personal accounts get a 401.
+      "name": "Outlook Desktop (Microsoft 365 account)",
+      "type": "msedge",
+      "request": "attach",
+      "port": 9229,
+      "timeout": 600000,
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "Debug: Outlook Desktop",
+      "postDebugTask": "Stop Debug"
+    }
+  ]
+}
